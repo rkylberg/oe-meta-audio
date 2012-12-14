@@ -17,8 +17,10 @@ LDFLAGS_append = " -shared -ldl -Wl,-Bsymbolic"
 #}
 
 do_compile() {
-  oe_runmake clean
+  #oe_runmake clean
   oe_runmake libpd
+  cd samples/c_samples/c
+  ${CC} pdtest.c -o pdtest -L../../../libs/ -lpd -I../../../pure-data/src -I../../../libpd_wrapper
 }
 
 do_install() {
@@ -29,6 +31,14 @@ do_install() {
   mv libs/${PN}.so libs/${PN}.so.${PD_VERSION}
   ln libs/${PN}.so.${PD_VERSION} libs/${PN}.so
   oe_libinstall -C libs/ ${PN} ${D}/${libdir}/
+  install -d ${D}/${bindir}
+  install -m 0755 samples/c_samples/c/pdtest ${D}/${bindir}
+  install -d ${D}/${datadir}/pd/
+  install samples/c_samples/c/test.pd ${D}/${datadir}/pd/
 }
 
 #FILES_${PN}-dev = "${libdir}/libpd.so"
+FILES_${PN} = "\
+  ${bindir}/pdtest \
+  ${datadir}/pd/test.pd \
+"
