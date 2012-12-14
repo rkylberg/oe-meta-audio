@@ -14,3 +14,5 @@ EXTRA_OECONF = "--disable-tk --enable-alsa"
 do_patch () {
   mkdir -p ${S}/m4/generated
 }
+
+FILES_${PN}-dbg += "${libdir}/pd/bin/.debug/* ${libdir}/pd/extra/*/.debug/*.pd_linux"
