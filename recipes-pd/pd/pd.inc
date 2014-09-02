@@ -1,7 +1,7 @@
 DESCRIPTION = "Pure Data: real-time music and multimedia environment"
 HOMEPAGE = "http://crca.ucsd.edu/~msp/software.html"
 LICENSE = "BSD-3-Clause"
-SRC_URI = "git://pure-data.git.sourceforge.net/gitroot/pure-data/pure-data;protocol=git"
+SRC_URI = "git://git.code.sf.net/p/pure-data/pure-data;protocol=git"
 
 S = "${WORKDIR}/git/"
 
