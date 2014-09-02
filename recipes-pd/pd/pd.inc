@@ -16,3 +16,4 @@ do_patch () {
 }
 
 FILES_${PN}-dbg += "${libdir}/pd/bin/.debug/* ${libdir}/pd/extra/*/.debug/*.pd_linux"
+FILES_${PN}-doc += "${libdir}/pd/doc/"
