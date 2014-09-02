@@ -8,7 +8,7 @@ S = "${WORKDIR}/git/"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE.txt;md5=ef3d3f3acede8823822519f658e24cc6"
 inherit autotools gettext
 DEPENDS = "alsa-lib"
-RDEPENDS = "alsa-lib"
+RDEPENDS_pd = "alsa-lib"
 EXTRA_OECONF = "--disable-tk --enable-alsa"
 
 do_patch () {
