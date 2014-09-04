@@ -1,6 +1,6 @@
 DESCRIPTION = "jack2: a C++ version of the JACK low-latency audio server for multi-processor machines."
 HOMEPAGE = "http://jackaudio.org/"
-LICENSE = "LGPL-2.1"
+LICENSE = "GPL-2.0"
 SRC_URI = "git://github.com/jackaudio/jack2;protocol=git"
 
 S = "${WORKDIR}/git/"
