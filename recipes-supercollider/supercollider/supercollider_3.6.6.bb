@@ -2,4 +2,4 @@ require supercollider.inc
 
 SRC_URI = "gitsm://github.com/errordeveloper/supercollider;protocol=git;branch=3.6"
 
-SRCREV = "51457844a2ee9d5ed90a2b151e2de02d8d22bb13"
+SRCREV = "d2d689200c342c0713fed688ac31ca703792898a"
