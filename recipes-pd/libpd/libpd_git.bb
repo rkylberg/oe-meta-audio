@@ -9,25 +9,28 @@ S = "${WORKDIR}/git"
 
 LIC_FILES_CHKSUM = "file://${S}/LICENSE.txt;md5=ef3d3f3acede8823822519f658e24cc6"
 
-CFLAGS_append = " -I./pure-data/src -I./libpd_wrapper -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DHAVE_LIBDL -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC -O3"
+CFLAGS_append = " \
+  -I./pure-data/src \
+  -I./libpd_wrapper \
+  -DPD \
+  -DHAVE_UNISTD_H \
+  -DUSEAPI_DUMMY \
+  -DHAVE_LIBDL \
+  -Wno-int-to-pointer-cast \
+  -Wno-pointer-to-int-cast \
+  -fPIC \
+  -O3 \
+"
+
 LDFLAGS_append = " -shared -ldl -Wl,-Bsymbolic"
 
-#do_configure() {
-#  #oe_runmake clean
-#}
-
 do_compile() {
-  #oe_runmake clean
   oe_runmake libpd
   cd samples/c_samples/c
   ${CC} pdtest.c -o pdtest -L../../../libs/ -lpd -I../../../pure-data/src -I../../../libpd_wrapper
 }
 
 do_install() {
-  #install -d ${STAGING_INCDIR}/pd/
-  #install -m 0644 libpd_wrapper/*.h ${STAGING_INCDIR}/pd/
-  #install -m 0644 pure-data/src/*.h ${STAGING_INCDIR}/pd/
-  #oe_libinstall -C libs/ ${PN} ${STAGING_LIBDIR}
   mv libs/${PN}.so libs/${PN}.so.${PD_VERSION}
   ln libs/${PN}.so.${PD_VERSION} libs/${PN}.so
   oe_libinstall -C libs/ ${PN} ${D}/${libdir}/
@@ -37,8 +40,7 @@ do_install() {
   install samples/c_samples/c/test.pd ${D}/${datadir}/pd/
 }
 
-#FILES_${PN}-dev = "${libdir}/libpd.so"
-FILES_${PN} = "\
+FILES_${PN} = " \
   ${bindir}/pdtest \
   ${datadir}/pd/test.pd \
 "
