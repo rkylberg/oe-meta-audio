@@ -27,15 +27,6 @@ inherit cmake
 DEPENDS = "fftw jack2 libsndfile1 alsa-lib boost"
 RDEPENDS_${PN} = "libfftw3 jack2 libsndfile1 boost"
 
-#inherit siteinfo
-#set_endian() {
-#    if [ ${SITEINFO_ENDIANNESS} = "le" ] ; then
-#        QT_ENDIAN="-little-endian"
-#    elif [ ${SITEINFO_ENDIANNESS} = "be" ] ; then
-#        QT_ENDIAN="-big-endian"
-#    fi
-#}
-
 FILES_${PN}-dev += " \
   ${datadir}/scvim/* \
   ${datadir}/SuperCollider/Extensions/scvim/* \
