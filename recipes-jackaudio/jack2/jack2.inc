@@ -11,7 +11,7 @@ LIC_FILES_CHKSUM = "file://${S}/common/Jackdmp.cpp;beginline=2;endline=18;md5=c0
 inherit waf
 
 DEPENDS = "alsa-lib libsamplerate0"
-RDEPENDS_jack2 = "alsa-lib libsamplerate0"
+RDEPENDS_${PN} = "alsa-lib libsamplerate0"
 
 FILES_${PN} += "${libdir}/jack/*.so"
 FILES_${PN}-dbg += "${libdir}/jack/.debug/*.so"
