@@ -27,6 +27,16 @@ inherit cmake
 DEPENDS = "fftw jack2 libsndfile1 alsa-lib boost"
 RDEPENDS_${PN} = "libfftw3 jack2 libsndfile1 boost"
 
+FILES_${PN} += " \
+  ${libdir}/SuperCollider/plugins/*.so \
+  ${datadir}/SuperCollider/SCClassLibrary/* \
+  ${datadir}/SuperCollider/sounds* \
+"
+
+FILES_${PN}-dbg += " \
+  ${libdir}/SuperCollider/plugins/.debug/*.so \
+"
+
 FILES_${PN}-dev += " \
   ${datadir}/scvim/* \
   ${datadir}/SuperCollider/Extensions/scvim/* \
@@ -37,14 +47,4 @@ FILES_${PN}-dev += " \
 FILES_${PN}-doc += " \
   ${datadir}/SuperCollider/HelpSource/* \
   ${datadir}/SuperCollider/examples/* \
-"
-
-FILES_${PN} += " \
-  ${libdir}/SuperCollider/plugins/*.so \
-  ${datadir}/SuperCollider/SCClassLibrary/* \
-  ${datadir}/SuperCollider/sounds* \
-"
-
-FILES_${PN}-dbg += " \
-  ${libdir}/SuperCollider/plugins/.debug/*.so \
 "
