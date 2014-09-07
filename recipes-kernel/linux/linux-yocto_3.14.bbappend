@@ -1,12 +1,12 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 SRC_URI_append_beaglebone = " \
-  file://BB-BONE-AUDI-02-00A0.dts \
+  file://add-static-capes.diff \
   file://snd.cfg \
   file://snd.scc \
 "
-#SRC_URI += "${@base_contains('MACHINE', 'beaglebone', 'file://BB-BONE-AUDI-02-00A0.dts', '', d)}"
-#KERNEL_DEVICETREE_append = " BB-BONE-AUDI-02-00A0.dts"
+
+KERNEL_DEVICETREE_append_beaglebone = " am335x-bone-audio-02-00A0.dtb"
 
 KERNEL_MODULE_AUTOLOAD_append_beaglebone = "snd-soc-tlv320aic3x"
 KERNEL_FEATURES_append_beaglebone = "snd.scc"
