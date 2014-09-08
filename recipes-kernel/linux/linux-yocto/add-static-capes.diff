@@ -1,285 +1,199 @@
-commit a93a2737ceb9555e9355cb479a2d83fd81b34dc3
+commit 8b46faee2ee37e314553b4893fcc0ea404a0c9ef
 Author: Ilya Dmitrichenko <errordeveloper@gmail.com>
-Date:   Mon Sep 8 12:55:41 2014 +0000
+Date:   Mon Sep 8 14:52:36 2014 +0000
 
-    ARM: dts: AM33XX: Prototype ability to compile sub-DT for an audio cape
+    ARM: dts: AM33XX: Prototype ability to compile sub-DT for an audio cape ARM: dts: AM33XX: Prototype ability to compile sub-DT for an audio cape
 
 diff --git a/arch/arm/boot/dts/am335x-bone-audio-01-00A0.dts b/arch/arm/boot/dts/am335x-bone-audio-01-00A0.dts
 new file mode 100644
-index 0000000..b56b755
+index 0000000..349ede8
 --- /dev/null
 +++ b/arch/arm/boot/dts/am335x-bone-audio-01-00A0.dts
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,99 @@
++/*
++ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +/dts-v1/;
-+
 +#include "am335x-bone.dtsi"
-+#include "am335x-bone-static-capes/BB-BONE-AUDI-01-00A0.dtsi"
++
++&am33xx_pinmux {
++        bone_audio_cape_led_pins: pinmux_bone_audio_cape_led_pins {
++                pinctrl-single,pins = <
++                        0x48 0x07	/* gpmc_a2.gpio1_18, OUTPUT | MODE7 */
++                        0x4c 0x07	/* gpmc_a3.gpio1_19, OUTPUT | MODE7 */
++                >;
++        };
++
++        bone_audio_cape_audio_pins: pinmux_bone_audio_cape_audio_pins {
++                pinctrl-single,pins = <
++                        0x190 0x20	/* mcasp0_aclkx.mcasp0_aclkx, INPUT | MODE0 */
++                        0x194 0x20	/* mcasp0_fsx.mcasp0_fsx, INPUT | MODE0 */
++                        0x19c 0x22	/* mcasp0_ahclkr.mcasp0_axr2, INPUT | MODE2 */
++                        0x1ac 0x22	/* mcasp0_ahclkx.mcasp0_axr3, INPUT | MODE2 */
++
++                >;
++        };
++};
++
++&ocp {
++        /* avoid stupid warning */
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        gpio-leds-cape-audio {
++                compatible = "gpio-leds";
++                pinctrl-names = "default";
++                pinctrl-0 = <&bone_audio_cape_led_pins>;
++
++                audio-led0 {
++                        label = "audio:green:usr0";
++                        gpios = <&gpio2 18 0>;
++                        linux,default-trigger = "heartbeat";
++                        default-state = "off";
++                };
++
++                audio-led1 {
++                        label = "audio:green:usr1";
++                        gpios = <&gpio2 19 0>;
++                        linux,default-trigger = "mmc0";
++                        default-state = "off";
++                };
++        };
++};
++
++&i2c2 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        tlv320aic3x: tlv320aic3x@1b {
++                compatible = "ti,tlv320aic3x";
++                reg = <0x1b>;
++                status = "okay";
++        };
++};
++
++&mcasp0 {
++        pinctrl-names = "default";
++        pinctrl-0 = <&bone_audio_cape_audio_pins>;
++
++        status = "okay";
++
++        op-mode = <0>;          /* MCASP_IIS_MODE */
++        tdm-slots = <2>;
++        num-serializer = <16>;
++        serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
++                0 0 2 1
++                0 0 0 0
++                0 0 0 0
++                0 0 0 0
++        >;
++        tx-num-evt = <1>;
++        rx-num-evt = <1>;
++};
++
++&ocp {
++        sound {
++                compatible = "ti,da830-evm-audio";
++                ti,model = "DA830 EVM";
++                ti,audio-codec = <&tlv320aic3x>;
++                ti,mcasp-controller = <&mcasp0>;
++                ti,codec-clock-rate = <12000000>;
++                ti,audio-routing =
++                        "Headphone Jack",       "HPLOUT",
++                        "Headphone Jack",       "HPROUT",
++                        "LINE1L",               "Line In",
++                        "LINE1R",               "Line In";
++        };
++};
 diff --git a/arch/arm/boot/dts/am335x-bone-audio-02-00A0.dts b/arch/arm/boot/dts/am335x-bone-audio-02-00A0.dts
 new file mode 100644
-index 0000000..ade5edb
+index 0000000..8057371
 --- /dev/null
 +++ b/arch/arm/boot/dts/am335x-bone-audio-02-00A0.dts
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,80 @@
++/*
++ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +/dts-v1/;
 +
 +#include "am335x-bone.dtsi"
-+#include "am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi"
-diff --git a/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-01-00A0.dtsi b/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-01-00A0.dtsi
-new file mode 100644
-index 0000000..b97fd0a
---- /dev/null
-+++ b/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-01-00A0.dtsi
-@@ -0,0 +1,136 @@
-+/*
-+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
 +
-+/ {
-+	compatible = "ti,beaglebone", "ti,beaglebone-black";
++&am33xx_pinmux {
 +
-+	/* identification */
-+	part-number = "BB-BONE-AUDI-01";
-+	version = "00A0", "A0";
++        i2c2_pins: pinmux_i2c2_pins {
++                pinctrl-single,pins = <
++                        0x150 0x72 	/* spi0_scl.i2c2_sda,SLEWCTRL_SLOW | INPUT_PULLUP | MODE2 */
++                        0x154 0x72	/* spi0_d0.i2c2_scl,SLEWCTRL_SLOW | INPUT_PULLUP | MODE2 */
++                >;
++        };
 +
-+	/* state the resources this cape uses */
-+	exclusive-use =
-+		/* the pin header uses */
-+		"P9.14",	/* leds:   gpio1_18 */
-+		"P9.16",	/* leds:   gpio1_19 */
-+		"P9.31",	/* mcasp0: mcasp0_aclkx */
-+		"P9.29",	/* mcasp0: mcasp0_fsx */
-+		"P9.28",	/* mcasp0: mcasp0_axr2 */
-+		"P9.25",	/* mcasp0: mcasp0_ahclkx */
-+		/* the hardware ip uses */
-+		"gpio1_18", "gpio1_19",
-+		"mcasp0";
-+
-+	fragment@0 {
-+		target = <&am33xx_pinmux>;
-+		__overlay__ {
-+
-+			bone_audio_cape_led_pins: pinmux_bone_audio_cape_led_pins {
-+				pinctrl-single,pins = <
-+					0x48 0x07	/* gpmc_a2.gpio1_18, OUTPUT | MODE7 */
-+					0x4c 0x07	/* gpmc_a3.gpio1_19, OUTPUT | MODE7 */
-+				>;
-+			};
-+
-+			bone_audio_cape_audio_pins: pinmux_bone_audio_cape_audio_pins {
-+				pinctrl-single,pins = <
-+					0x190 0x20	/* mcasp0_aclkx.mcasp0_aclkx, INPUT | MODE0 */
-+					0x194 0x20	/* mcasp0_fsx.mcasp0_fsx, INPUT | MODE0 */
-+					0x19c 0x22	/* mcasp0_ahclkr.mcasp0_axr2, INPUT | MODE2 */
-+					0x1ac 0x22	/* mcasp0_ahclkx.mcasp0_axr3, INPUT | MODE2 */
-+
-+				>;
-+			};
-+		};
-+	};
-+
-+	fragment@1 {
-+		target = <&ocp>;
-+		__overlay__ {
-+
-+			/* avoid stupid warning */
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			gpio-leds-cape-audio {
-+				compatible = "gpio-leds";
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&bone_audio_cape_led_pins>;
-+
-+				audio-led0 {
-+					label = "audio:green:usr0";
-+					gpios = <&gpio2 18 0>;
-+					linux,default-trigger = "heartbeat";
-+					default-state = "off";
-+				};
-+
-+				audio-led1 {
-+					label = "audio:green:usr1";
-+					gpios = <&gpio2 19 0>;
-+					linux,default-trigger = "mmc0";
-+					default-state = "off";
-+				};
-+			};
-+		};
-+	};
-+
-+	fragment@2 {
-+		target = <&i2c2>;
-+		__overlay__ {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			tlv320aic3x: tlv320aic3x@1b {
-+				compatible = "ti,tlv320aic3x";
-+				reg = <0x1b>;
-+				status = "okay";
-+			};
-+		};
-+	};
-+
-+	fragment@3 {
-+		target = <&mcasp0>;
-+		__overlay__ {
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&bone_audio_cape_audio_pins>;
-+
-+			status = "okay";
-+
-+			op-mode = <0>;          /* MCASP_IIS_MODE */
-+			tdm-slots = <2>;
-+			num-serializer = <16>;
-+			serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-+				0 0 2 1
-+				0 0 0 0
-+				0 0 0 0
-+				0 0 0 0
-+			>;
-+			tx-num-evt = <1>;
-+			rx-num-evt = <1>;
-+		};
-+	};
-+
-+	fragment@4 {
-+		target = <&ocp>;
-+		__overlay__ {
-+			sound {
-+				compatible = "ti,da830-evm-audio";
-+				ti,model = "DA830 EVM";
-+				ti,audio-codec = <&tlv320aic3x>;
-+				ti,mcasp-controller = <&mcasp0>;
-+				ti,codec-clock-rate = <12000000>;
-+				ti,audio-routing =
-+					"Headphone Jack",       "HPLOUT",
-+					"Headphone Jack",       "HPROUT",
-+					"LINE1L",               "Line In",
-+					"LINE1R",               "Line In";
-+			};
-+		};
-+
-+	};
++        bone_audio_cape_audio_pins: pinmux_bone_audio_cape_audio_pins {
++                pinctrl-single,pins = <
++                        0x1ac 0x00      /* mcasp0_ahclkx,             MODE0 | INPUT */
++                        0x19c 0x22      /* mcasp0_ahclkr, */
++                        0x194 0x20      /* mcasp0_fsx,         	      MODE0 | OUTPUT  */
++                        0x190 0x20      /* mcasp0_aclkr.mcasp0_aclkx, MODE0 | OUTPUT_PULLDOWN */
++                        0x198 0x20
++                >;
++        };
 +};
-diff --git a/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi b/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi
-new file mode 100644
-index 0000000..eeceafe
---- /dev/null
-+++ b/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi
-@@ -0,0 +1,109 @@
-+/*
-+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
 +
-+/ {
-+	compatible = "ti,beaglebone", "ti,beaglebone-black";
-+
-+	/* identification */
-+	part-number = "BB-BONE-AUDI-02";
-+	version = "00A0", "A0";
-+
-+	/* state the resources this cape uses */
-+	exclusive-use =
-+		/* the pin header uses */
-+		"P9.31",	/* mcasp0: mcasp0_aclkx */
-+		"P9.29",	/* mcasp0: mcasp0_fsx */
-+		"P9.28",	/* mcasp0: mcasp0_axr2 */
-+		"P9.25",	/* mcasp0: mcasp0_ahclkx */
-+		/* the hardware ip uses */
-+		"gpio1_18", "gpio1_19",
-+		"mcasp0";
-+
-+	fragment@0 {
-+		target = <&am33xx_pinmux>;
-+		__overlay__ {
-+
-+			i2c2_pins: pinmux_i2c2_pins {
-+				pinctrl-single,pins = <
-+					0x150 0x72 	/*spi0_scl.i2c2_sda,SLEWCTRL_SLOW | INPUT_PULLUP |MODE2*/
-+					0x154 0x72	/*spi0_d0.i2c2_scl,SLEWCTRL_SLOW | INPUT_PULLUP | MODE2*/
-+				>;
-+			};
-+
-+			bone_audio_cape_audio_pins: pinmux_bone_audio_cape_audio_pins {
-+				pinctrl-single,pins = <
-+					0x1ac 0x00      /* mcasp0_ahclkx,             MODE0 | INPUT */
-+					0x19c 0x22		/* mcasp0_ahclkr, */
-+					0x194 0x20      /* mcasp0_fsx,         	      MODE0 | OUTPUT  */
-+					0x190 0x20      /* mcasp0_aclkr.mcasp0_aclkx, MODE0 | OUTPUT_PULLDOWN */
-+					0x198 0x20
-+				>;
-+			};
-+		};
-+	};
-+
-+	fragment@1 {
-+		target = <&i2c2>;
-+		__overlay__ {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			clock-frequency = <100000>;
-+			status = "okay";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&i2c2_pins>;
++&i2c2 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        clock-frequency = <100000>;
++        status = "okay";
++        pinctrl-names = "default";
++        pinctrl-0 = <&i2c2_pins>;
 +
 +
-+			tlv320aic3x: tlv320aic3x@18 {
-+				compatible = "ti,tlv320aic3x";
-+				reg = <0x18>;
-+				status = "okay";
-+			};
-+		};
-+	};
++        tlv320aic3x: tlv320aic3x@18 {
++                compatible = "ti,tlv320aic3x";
++                reg = <0x18>;
++                status = "okay";
++        };
++};
 +
-+	fragment@2 {
-+		target = <&mcasp0>;
-+		__overlay__ {
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&bone_audio_cape_audio_pins>;
++&mcasp0 {
++        pinctrl-names = "default";
++        pinctrl-0 = <&bone_audio_cape_audio_pins>;
 +
-+			status = "okay";
++        status = "okay";
 +
-+			op-mode = <0>;          /* MCASP_IIS_MODE */
-+			tdm-slots = <2>;
-+			num-serializer = <16>;
-+			serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
-+				2 0 1 0
-+				0 0 0 0
-+				0 0 0 0
-+				0 0 0 0
-+			>;
-+			tx-num-evt = <1>;
-+			rx-num-evt = <1>;
-+		};
-+	};
++        op-mode = <0>;          /* MCASP_IIS_MODE */
++        tdm-slots = <2>;
++        num-serializer = <16>;
++        serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
++                2 0 1 0
++                0 0 0 0
++                0 0 0 0
++                0 0 0 0
++        >;
++        tx-num-evt = <1>;
++        rx-num-evt = <1>;
++};
 +
-+	fragment@3 {
-+		target = <&ocp>;
-+		__overlay__ {
-+			sound {
-+				compatible = "ti,da830-evm-audio";
-+				ti,model = "DA830 EVM";
-+				ti,audio-codec = <&tlv320aic3x>;
-+				ti,mcasp-controller = <&mcasp0>;
-+				ti,codec-clock-rate = <12000000>;
-+				ti,audio-routing =
-+					"Headphone Jack",       "HPLOUT",
-+					"Headphone Jack",       "HPROUT",
-+					"LINE1L",               "Line In",
-+					"LINE1R",               "Line In";
-+			};
-+		};
-+
-+	};
++&ocp {
++        sound {
++                compatible = "ti,da830-evm-audio";
++                ti,model = "DA830 EVM";
++                ti,audio-codec = <&tlv320aic3x>;
++                ti,mcasp-controller = <&mcasp0>;
++                ti,codec-clock-rate = <12000000>;
++                ti,audio-routing =
++                        "Headphone Jack",       "HPLOUT",
++                        "Headphone Jack",       "HPROUT",
++                        "LINE1L",               "Line In",
++                        "LINE1R",               "Line In";
++        };
 +};
 diff --git a/arch/arm/boot/dts/am335x-bone.dts b/arch/arm/boot/dts/am335x-bone.dts
 index 94ee427..04a9dbf 100644
