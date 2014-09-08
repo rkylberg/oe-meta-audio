@@ -1,19 +1,17 @@
-commit e5cfabf992f1ebcac70ac4957d035db2a5d183d5
+commit bafad138a1fd3950892e4fd87c98594225929158
 Author: Ilya Dmitrichenko <errordeveloper@gmail.com>
-Date:   Sun Sep 7 12:55:49 2014 +0000
+Date:   Mon Sep 8 08:10:46 2014 +0000
 
     ARM: dts: AM33XX: Prototype ability to compile sub-DT for an audio cape
 
 diff --git a/arch/arm/boot/dts/am335x-bone-audio-02-00A0.dts b/arch/arm/boot/dts/am335x-bone-audio-02-00A0.dts
 new file mode 100644
-index 0000000..076f8f7
+index 0000000..ade5edb
 --- /dev/null
 +++ b/arch/arm/boot/dts/am335x-bone-audio-02-00A0.dts
-@@ -0,0 +1,6 @@
+@@ -0,0 +1,4 @@
 +/dts-v1/;
 +
-+#include "am33xx.dtsi"
-+#include "am335x-bone-common.dtsi"
 +#include "am335x-bone.dtsi"
 +#include "am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi"
 diff --git a/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi b/arch/arm/boot/dts/am335x-bone-static-capes/BB-BONE-AUDI-02-00A0.dtsi
@@ -200,3 +198,16 @@ index 0000000..0086ec4
 +&aes {
 +	status = "okay";
 +};
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index 6d95d3d..50149a8 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -95,7 +95,7 @@
+ 	 * for the moment, just use a fake OCP bus entry to represent
+ 	 * the whole bus hierarchy.
+ 	 */
+-	ocp {
++	ocp: ocp {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
