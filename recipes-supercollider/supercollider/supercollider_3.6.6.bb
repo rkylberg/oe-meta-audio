@@ -1,5 +1,5 @@
 require supercollider.inc
 
-SRC_URI = "gitsm://github.com/errordeveloper/supercollider;protocol=git;branch=3.6"
+SRC_URI = "gitsm://github.com/rkylberg/supercollider;protocol=git;branch=fido"
 
-SRCREV = "d2d689200c342c0713fed688ac31ca703792898a"
+SRCREV = "5a75e4c6a37a75b64cb454aeb4ea4d8548c697f2"
