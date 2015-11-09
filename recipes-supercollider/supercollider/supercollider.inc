@@ -24,7 +24,7 @@ EXTRA_OECMAKE = "\
 
 inherit cmake
 
-DEPENDS = "fftw jack2 libsndfile1 alsa-lib boost"
+DEPENDS = "curl yaml-cpp avahi libxt fftwf jack2 libsndfile1 alsa-lib boost"
 RDEPENDS_${PN} = "libfftw3 jack2 libsndfile1 boost"
 
 FILES_${PN} += " \
